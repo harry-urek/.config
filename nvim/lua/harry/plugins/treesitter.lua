@@ -1,52 +1,54 @@
 return {
-	"nvim-treesitter/nvim-treesitter",
-	build = ":TSUpdate",
-	config = function()
-		require("nvim-treesitter.configs").setup({
-			ensure_installed = { "c", "lua", "go", "python", "javascript" },
-			highlight = { enable = true },
-			incremental_selection = {
-				enable = true,
-				-- SEE: https://github.com/nvim-treesitter/nvim-treesitter/issues/4945
-				-- SEE: https://github.com/UserNobody14/tree-sitter-dart/issues/48
-				disable = { "dart" },
-				keymaps = {
-					init_selection = false,
-					node_incremental = "g)",
-					scope_incremental = "g}",
-					node_decremental = "g(",
-				},
-			},
-			indent = { enable = true },
+    "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPre", "BufNewFile" },
+    build = ":TSUpdate",
+    dependencies = {
+        "windwp/nvim-ts-autotag",
+    },
+    config = function()
+        -- import nvim-treesitter plugin
+        local treesitter = require("nvim-treesitter.configs")
 
-			-- extra modules
+        -- configure treesitter
+        treesitter.setup({ -- enable syntax highlighting
+            highlight = {
+                enable = true,
+            },
+            -- enable indentation
+            indent = { enable = true },
+            -- enable autotagging (w/ nvim-ts-autotag plugin)
+            autotag = {
+                enable = true,
+            },
+            -- ensure these language parsers are installed
+            ensure_installed = {
+                "python",
+                "go",
+                "json",
+                "yaml",
+                "html",
+                "prisma",
+                "markdown",
+                "markdown_inline",
 
-			-- nvim-treesitter-textobjects
-			textobjects = {
-				select = {
-					enable = true,
-					-- for `zig`, SEE: https://github.com/nvim-treesitter/nvim-treesitter-textobjects/issues/461
-					--[[ disable = { "dart", "zig" }, ]]
-					lookahead = true,
-					-- keymaps = {
-					-- 	["aB"] = "@block.outer",
-					-- 	["iB"] = "@block.inner",
-					-- 	["ic"] = "@conditional.inner",
-					-- 	["ac"] = "@conditional.outer",
-					-- 	["af"] = "@function.outer",
-					-- 	["if"] = "@function.inner",
-					-- 	["al"] = "@loop.outer",
-					-- 	["il"] = "@loop.inner",
-					-- 	["is"] = "@statement.inner",
-					-- 	["as"] = "@statement.outer",
-					-- 	["aC"] = "@class.outer",
-					-- 	["iC"] = "@class.inner",
-					-- },
-				},
-			},
-
-			-- nvim-ts-autotag
-			autotag = { enable = true },
-		})
-	end,
+                "bash",
+                "lua",
+                "vim",
+                "dockerfile",
+                "gitignore",
+                "query",
+                "vimdoc",
+                "c",
+            },
+            incremental_selection = {
+                enable = true,
+                keymaps = {
+                    init_selection = "<C-space>",
+                    node_incremental = "<C-space>",
+                    scope_incremental = false,
+                    node_decremental = "<bs>",
+                },
+            },
+        })
+    end,
 }
